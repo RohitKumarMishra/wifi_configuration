@@ -14,7 +14,6 @@ class FlutterPlugin {
   static Future<bool> connectToWifi(String ssid, String password) async {
 
     final bool isConnected = await _channel.invokeMethod('connectToWifi', <String, dynamic>{"ssid" : ssid, "password" : password});
-
     return isConnected;
   }
 

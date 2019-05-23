@@ -3,8 +3,7 @@ package com.example.wifi_configuration.manager;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+
 
 import com.thanosfisherman.elvis.Objects;
 
@@ -28,7 +27,7 @@ final class ConfigSecurities {
      * @param password Password of the network if security is not OPEN.
      */
 
-    static void setupSecurity(@NonNull WifiConfiguration config, String security, @NonNull final String password) {
+    static void setupSecurity( WifiConfiguration config, String security,  final String password) {
         config.allowedAuthAlgorithms.clear();
         config.allowedGroupCiphers.clear();
         config.allowedKeyManagement.clear();
@@ -97,8 +96,8 @@ final class ConfigSecurities {
         }
     }
 
-    @Nullable
-    static WifiConfiguration getWifiConfiguration(@NonNull final WifiManager wifiMgr, @NonNull final WifiConfiguration configToFind) {
+    
+    static WifiConfiguration getWifiConfiguration( final WifiManager wifiMgr,  final WifiConfiguration configToFind) {
         final String ssid = configToFind.SSID;
         if (ssid == null || ssid.isEmpty())
             return null;
@@ -125,8 +124,8 @@ final class ConfigSecurities {
         return null;
     }
 
-    @Nullable
-    static WifiConfiguration getWifiConfiguration(@NonNull final WifiManager wifiMgr, @NonNull final ScanResult scanResult) {
+    
+    static WifiConfiguration getWifiConfiguration( final WifiManager wifiMgr,  final ScanResult scanResult) {
         if (scanResult.BSSID == null || scanResult.SSID == null || scanResult.SSID.isEmpty() || scanResult.BSSID.isEmpty())
             return null;
         final String ssid = ConnectorUtils.convertToQuotedString(scanResult.SSID);
@@ -147,7 +146,7 @@ final class ConfigSecurities {
         return null;
     }
 
-    static String getSecurity(@NonNull WifiConfiguration config) {
+    static String getSecurity( WifiConfiguration config) {
         String security = SECURITY_NONE;
         final Collection<String> securities = new ArrayList<>();
         if (config.allowedKeyManagement.get(WifiConfiguration.KeyMgmt.NONE)) {
@@ -175,7 +174,7 @@ final class ConfigSecurities {
         return security;
     }
 
-    static String getSecurity(@NonNull ScanResult result) {
+    static String getSecurity( ScanResult result) {
         String security = SECURITY_NONE;
         if (result.capabilities.contains(SECURITY_WEP))
             security = SECURITY_WEP;
@@ -192,7 +191,7 @@ final class ConfigSecurities {
     /**
      * @return The security of a given {@link ScanResult}.
      */
-    public static String getSecurityPrettyPlusWps(@Nullable ScanResult scanResult) {
+    public static String getSecurityPrettyPlusWps( ScanResult scanResult) {
         if (scanResult == null)
             return "";
         String result = getSecurity(scanResult);

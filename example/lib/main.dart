@@ -26,7 +26,7 @@ class _MyAppState extends State<MyApp> {
 void getConnectionState() async {
   var listAvailableWifi = await WifiConfiguration.getWifiList();
   print("get wifi list : " + listAvailableWifi.toString());
-    bool connectionState = await WifiConfiguration.connectToWifi("Rk", "123456@123");
+    bool connectionState = await WifiConfiguration.connectToWifi("AndroidAPAF", "feedh@12345");
     print("is Connected : ${connectionState}");
 
 }

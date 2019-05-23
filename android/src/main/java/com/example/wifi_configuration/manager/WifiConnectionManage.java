@@ -1,6 +1,6 @@
 package com.example.wifi_configuration.manager;
 
-import android.annotation.SuppressLint;
+
 import android.app.Activity;
 import android.content.Context;
 import android.net.wifi.ScanResult;
@@ -46,7 +46,6 @@ public class WifiConnectionManage {
     public void getConfiguredWifiList(final Activity activity,
                                       String ssid, String passowrd) {
         try {
-            @SuppressLint("WifiManagerLeak")
             WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
             WifiManager wifi = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
             if (wifi.isWifiEnabled() == false) {

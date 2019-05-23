@@ -27,9 +27,7 @@ package com.example.wifi_configuration.manager;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.VisibleForTesting;
+
 
 import java.lang.ref.WeakReference;
 import java.util.concurrent.locks.Lock;
@@ -57,7 +55,7 @@ public class WeakHandler {
     private final ExecHandler mExec;
     private Lock mLock = new ReentrantLock();
     @SuppressWarnings("ConstantConditions")
-    @VisibleForTesting
+    
     final ChainedRef mRunnables = new ChainedRef(mLock, null);
 
     /**
@@ -82,7 +80,7 @@ public class WeakHandler {
      *
      * @param callback The callback interface in which to handle messages, or null.
      */
-    public WeakHandler(@Nullable Handler.Callback callback) {
+    public WeakHandler( Handler.Callback callback) {
         mCallback = callback; // Hard referencing body
         mExec = new ExecHandler(new WeakReference<>(callback)); // Weak referencing inside ExecHandler
     }
@@ -92,7 +90,7 @@ public class WeakHandler {
      *
      * @param looper The looper, must not be null.
      */
-    public WeakHandler(@NonNull Looper looper) {
+    public WeakHandler( Looper looper) {
         mCallback = null;
         mExec = new ExecHandler(looper);
     }
@@ -104,7 +102,7 @@ public class WeakHandler {
      * @param looper The looper, must not be null.
      * @param callback The callback interface in which to handle messages, or null.
      */
-    public WeakHandler(@NonNull Looper looper, @NonNull Handler.Callback callback) {
+    public WeakHandler( Looper looper,  Handler.Callback callback) {
         mCallback = callback;
         mExec = new ExecHandler(looper, new WeakReference<>(callback));
     }
@@ -120,7 +118,7 @@ public class WeakHandler {
      *         message queue.  Returns false on failure, usually because the
      *         looper processing the message queue is exiting.
      */
-    public final boolean post(@NonNull Runnable r) {
+    public final boolean post( Runnable r) {
         return mExec.post(wrapRunnable(r));
     }
 
@@ -141,7 +139,7 @@ public class WeakHandler {
      *         the looper is quit before the delivery time of the message
      *         occurs then the message will be dropped.
      */
-    public final boolean postAtTime(@NonNull Runnable r, long uptimeMillis) {
+    public final boolean postAtTime( Runnable r, long uptimeMillis) {
         return mExec.postAtTime(wrapRunnable(r), uptimeMillis);
     }
 
@@ -380,7 +378,7 @@ public class WeakHandler {
         return mExec.getLooper();
     }
 
-    private WeakRunnable wrapRunnable(@NonNull Runnable r) {
+    private WeakRunnable wrapRunnable( Runnable r) {
         //noinspection ConstantConditions
         if (r == null) {
             throw new NullPointerException("Runnable can't be null");
@@ -412,7 +410,7 @@ public class WeakHandler {
         }
 
         @Override
-        public void handleMessage(@NonNull Message msg) {
+        public void handleMessage( Message msg) {
             if (mCallback == null) {
                 return;
             }
@@ -447,19 +445,19 @@ public class WeakHandler {
     }
 
     static class ChainedRef {
-        @Nullable
+        
         ChainedRef next;
-        @Nullable
+        
         ChainedRef prev;
-        @NonNull
+        
         final Runnable runnable;
-        @NonNull
+        
         final WeakRunnable wrapper;
 
-        @NonNull
+        
         Lock lock;
 
-        public ChainedRef(@NonNull Lock lock, @NonNull Runnable r) {
+        public ChainedRef( Lock lock,  Runnable r) {
             this.runnable = r;
             this.lock = lock;
             this.wrapper = new WeakRunnable(new WeakReference<>(r), new WeakReference<>(this));
@@ -482,7 +480,7 @@ public class WeakHandler {
             return wrapper;
         }
 
-        public void insertAfter(@NonNull ChainedRef candidate) {
+        public void insertAfter( ChainedRef candidate) {
             lock.lock();
             try {
                 if (this.next != null) {
@@ -497,7 +495,7 @@ public class WeakHandler {
             }
         }
 
-        @Nullable
+        
         public WeakRunnable remove(Runnable obj) {
             lock.lock();
             try {

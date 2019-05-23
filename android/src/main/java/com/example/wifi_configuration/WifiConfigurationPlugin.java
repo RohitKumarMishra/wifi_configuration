@@ -19,6 +19,10 @@ import com.example.wifi_configuration.connect.ConnectionSuccessListener;
 import com.example.wifi_configuration.connect.WifiCallback;
 import com.example.wifi_configuration.manager.WifiUtils;
 
+/**
+ *
+ */
+
 /** WifiConfigurationPlugin */
 public class WifiConfigurationPlugin implements MethodCallHandler {
   static Context context;
@@ -34,8 +38,17 @@ public class WifiConfigurationPlugin implements MethodCallHandler {
 
   }
 
+    /**
+     *
+     * @param call
+     * @param result
+     */
   @Override
   public void onMethodCall(MethodCall call, Result result) {
+
+      /**
+       *
+        */
    if (call.method.equals("connectToWifi")) {
       this.connectWithWPA(call.argument("ssid"), call.argument("password"), WifiConfigurationPlugin.context, result);
 
@@ -49,8 +62,14 @@ public class WifiConfigurationPlugin implements MethodCallHandler {
   }
 
 
-
-
+    /**
+     * This method is used to connect to specific ssid
+     *
+     * @param ssid
+     * @param password
+     * @param context
+     * @param result
+     */
   private void connectWithWPA(String ssid, String password, Context context, Result result) {
 
     wifiUtils.withContext(context)
@@ -69,7 +88,10 @@ public class WifiConfigurationPlugin implements MethodCallHandler {
   }
 
 
-
+    /**
+     *
+     * @return
+     */
   private  List<String> getAvailableWifiList() {
     List<String> wifiList = new ArrayList<String>();
     if (wifiUtils.getScanWifiResult() != null){

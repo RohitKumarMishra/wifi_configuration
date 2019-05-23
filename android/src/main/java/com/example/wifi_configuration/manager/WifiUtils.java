@@ -5,9 +5,7 @@ import android.content.IntentFilter;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.Build;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
+
 import android.util.Log;
 
 import com.example.wifi_configuration.ConnectionWpsListener;
@@ -40,42 +38,42 @@ public final class WifiUtils implements WifiConnectorBuilder,
         WifiConnectorBuilder.WifiUtilsBuilder,
         WifiConnectorBuilder.WifiSuccessListener,
         WifiConnectorBuilder.WifiWpsSuccessListener {
-    @NonNull
+    
     private final WifiManager mWifiManager;
-    @NonNull
+    
     private final Context mContext;
     private static boolean mEnableLog;
     private long mWpsTimeoutMillis = 30000;
     private long mTimeoutMillis = 30000;
-    @NonNull
+    
     private static final String TAG = WifiUtils.class.getSimpleName();
-    //@NonNull private static final WifiUtils INSTANCE = new WifiUtils();
-    @NonNull
+    // private static final WifiUtils INSTANCE = new WifiUtils();
+    
     private final WifiStateReceiver mWifiStateReceiver;
-    @NonNull
+    
     private final WifiConnectionReceiver mWifiConnectionReceiver;
-    @NonNull
+    
     private final WifiScanReceiver mWifiScanReceiver;
-    @Nullable
+    
     private String mSsid;
-    @Nullable
+    
     private String mBssid;
-    @Nullable
+    
     private String mPassword;
-    @Nullable
+    
     private ScanResult mSingleScanResult;
-    @Nullable
+    
     private ScanResultsListener mScanResultsListener;
-    @Nullable
+    
     private ConnectionScanResultsListener mConnectionScanResultsListener;
-    @Nullable
+    
     private ConnectionSuccessListener mConnectionSuccessListener;
-    @Nullable
+    
     private WifiStateListener mWifiStateListener;
-    @Nullable
+    
     private ConnectionWpsListener mConnectionWpsListener;
 
-    @NonNull
+    
     private final WifiStateCallback mWifiStateCallback = new WifiStateCallback() {
         @Override
         public void onWifiEnabled() {
@@ -97,7 +95,7 @@ public final class WifiUtils implements WifiConnectorBuilder,
         }
     };
 
-    @NonNull
+    
     private final WifiScanCallback mWifiScanResultsCallback = new WifiScanCallback() {
         @Override
         public void onScanResultsReady() {
@@ -147,7 +145,7 @@ public final class WifiUtils implements WifiConnectorBuilder,
         return null;
     }
 
-    @NonNull
+    
     private final WifiConnectionCallback mWifiConnectionCallback = new WifiConnectionCallback() {
         @Override
         public void successfulConnect() {
@@ -170,7 +168,7 @@ public final class WifiUtils implements WifiConnectorBuilder,
         }
     };
 
-    public WifiUtils(@NonNull Context context) {
+    public WifiUtils( Context context) {
         mContext = context;
         mWifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         if (mWifiManager == null)
@@ -180,7 +178,7 @@ public final class WifiUtils implements WifiConnectorBuilder,
         mWifiConnectionReceiver = new WifiConnectionReceiver(mWifiConnectionCallback, mWifiManager, mTimeoutMillis);
     }
 
-    public static WifiUtilsBuilder withContext(@NonNull final Context context) {
+    public static WifiUtilsBuilder withContext( final Context context) {
         return new WifiUtils(context);
     }
 
@@ -194,7 +192,7 @@ public final class WifiUtils implements WifiConnectorBuilder,
     }
 
     @Override
-    public void enableWifi(@Nullable final WifiStateListener wifiStateListener) {
+    public void enableWifi( final WifiStateListener wifiStateListener) {
         mWifiStateListener = wifiStateListener;
         if (mWifiManager.isWifiEnabled())
             mWifiStateCallback.onWifiEnabled();
@@ -216,45 +214,48 @@ public final class WifiUtils implements WifiConnectorBuilder,
         enableWifi(null);
     }
 
-    @NonNull
+    
     @Override
     public WifiConnectorBuilder scanWifi(final ScanResultsListener scanResultsListener) {
         mScanResultsListener = scanResultsListener;
         return this;
     }
 
-    @NonNull
+    
     @Override
-    public WifiSuccessListener connectWith(@NonNull final String ssid, @NonNull final String password) {
+    public WifiSuccessListener connectWith( final String ssid,  final String password) {
         mSsid = ssid;
         mPassword = password;
         return this;
     }
 
-    @NonNull
+    
     @Override
-    public WifiSuccessListener connectWith(@NonNull final String ssid, @NonNull final String bssid, @NonNull final String password) {
+    public WifiSuccessListener connectWith( final String ssid,  final String bssid,  final String password) {
         mSsid = ssid;
         mBssid = bssid;
         mPassword = password;
         return this;
     }
 
-    @NonNull
+    
     @Override
-    public WifiSuccessListener connectWithScanResult(@NonNull final String password,
-                                                     @Nullable final ConnectionScanResultsListener connectionScanResultsListener) {
+    public WifiSuccessListener connectWithScanResult( final String password,
+                                                      final ConnectionScanResultsListener connectionScanResultsListener) {
         mConnectionScanResultsListener = connectionScanResultsListener;
         mPassword = password;
         return this;
     }
 
-    @NonNull
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    
     @Override
-    public WifiWpsSuccessListener connectWithWps(@NonNull final String bssid, @NonNull final String password) {
-        mBssid = bssid;
-        mPassword = password;
+    public WifiWpsSuccessListener connectWithWps( final String bssid,  final String password) {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            // only for gingerbread and newer versions
+            mBssid = bssid;
+            mPassword = password;
+        }
+
         return this;
     }
 
@@ -267,7 +268,7 @@ public final class WifiUtils implements WifiConnectorBuilder,
         reenableAllHotspots(mWifiManager);
     }
 
-    @NonNull
+    
     @Override
     public WifiSuccessListener setTimeout(final long timeOutMillis) {
         mTimeoutMillis = timeOutMillis;
@@ -275,25 +276,27 @@ public final class WifiUtils implements WifiConnectorBuilder,
         return this;
     }
 
-    @NonNull
+    
     @Override
     public WifiWpsSuccessListener setWpsTimeout(final long timeOutMillis) {
         mWpsTimeoutMillis = timeOutMillis;
         return this;
     }
 
-    @NonNull
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    
     @Override
-    public WifiConnectorBuilder onConnectionWpsResult(@Nullable final ConnectionWpsListener successListener) {
-        mConnectionWpsListener = successListener;
+    public WifiConnectorBuilder onConnectionWpsResult( final ConnectionWpsListener successListener) {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            // only for gingerbread and newer versions
+            mConnectionWpsListener = successListener;
+        }
         return this;
     }
 
 
-    @NonNull
+    
     @Override
-    public WifiConnectorBuilder onConnectionResult(@Nullable final ConnectionSuccessListener successListener) {
+    public WifiConnectorBuilder onConnectionResult( final ConnectionSuccessListener successListener) {
         mConnectionSuccessListener = successListener;
         return this;
     }

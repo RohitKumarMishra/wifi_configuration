@@ -1,9 +1,6 @@
 package com.example.wifi_configuration.manager;
 
 import android.os.Build;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
 
 import com.example.wifi_configuration.ConnectionWpsListener;
 import com.example.wifi_configuration.connect.ConnectionScanResultsListener;
@@ -22,39 +19,36 @@ public interface WifiConnectorBuilder {
 
         void disableWifi();
 
-        @NonNull
-        WifiConnectorBuilder scanWifi(@Nullable ScanResultsListener scanResultsListener);
+        
+        WifiConnectorBuilder scanWifi( ScanResultsListener scanResultsListener);
 
-        @NonNull
-        WifiSuccessListener connectWith(@NonNull String ssid, @NonNull String password);
+        
+        WifiSuccessListener connectWith( String ssid,  String password);
 
-        @NonNull
-        WifiSuccessListener connectWith(@NonNull String ssid, @NonNull String bssid, @NonNull String password);
+        
+        WifiSuccessListener connectWith( String ssid,  String bssid,  String password);
 
-        @NonNull
-        WifiSuccessListener connectWithScanResult(@NonNull String password, @Nullable ConnectionScanResultsListener connectionScanResultsListener);
+        
+        WifiSuccessListener connectWithScanResult( String password,  ConnectionScanResultsListener connectionScanResultsListener);
 
-        @NonNull
-        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-        WifiWpsSuccessListener connectWithWps(@NonNull String bssid, @NonNull String password);
+        
+        WifiWpsSuccessListener connectWithWps( String bssid,  String password);
 
         void cancelAutoConnect();
     }
 
     interface WifiSuccessListener {
-        @NonNull
+        
         WifiSuccessListener setTimeout(long timeOutMillis);
 
-        @NonNull
-        WifiConnectorBuilder onConnectionResult(@Nullable ConnectionSuccessListener successListener);
+        
+        WifiConnectorBuilder onConnectionResult( ConnectionSuccessListener successListener);
     }
 
     interface WifiWpsSuccessListener {
-        @NonNull
+        
         WifiWpsSuccessListener setWpsTimeout(long timeOutMillis);
-
-        @NonNull
-        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-        WifiConnectorBuilder onConnectionWpsResult(@Nullable ConnectionWpsListener successListener);
+        
+        WifiConnectorBuilder onConnectionWpsResult( ConnectionWpsListener successListener);
     }
 }
