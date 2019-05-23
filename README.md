@@ -35,6 +35,9 @@ Add below Permissions to your manifist.xml file -
 
   var listAvailableWifi = await WifiConfiguration.getWifiList();
   //If wifi is available then device will get connected
+  //In case of ios you will not get list of connected wifi an empty list will be available
+  //As Apple does not allow to scan the available hotspot list
+  //If you try to access with private api's then apple will reject the app
 
   bool connectionState = await WifiConfiguration.connectToWifi("Wifi ssid", "Wifi Pass");
   //This will return a boolean value
@@ -45,15 +48,10 @@ Add below Permissions to your manifist.xml file -
 When you use connection on iOS (iOS 11 only)
 
 1. 'build Phass' -> 'Link Binay With Libraries' add 'NetworkExtension.framework'
-    ![NetworkExtension](https://github.com/once10301/wifi/blob/master/png/NetworkExtension.png)
 
 2. in 'Capabilities' open 'Hotspot Configuration'
 
-    ![NetworkExtension](https://github.com/once10301/wifi/blob/master/png/Hotspot%20Configuration.png)
-
 3. If you device is iOS12, in 'Capabilities' open 'Access WiFi Information'
-
-    ![NetworkExtension](https://github.com/once10301/wifi/blob/master/png/Access%20WiFi%20Information.png)
 
 If you want to use Wifi.list on iOS,
 
