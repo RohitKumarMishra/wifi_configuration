@@ -186,6 +186,9 @@ public class WifiConfigurationPlugin implements MethodCallHandler {
         WifiManager wifiManager = (WifiManager) Constant.context.getSystemService (Context.WIFI_SERVICE);
         WifiInfo info = wifiManager.getConnectionInfo ();
         String wifiConnected = info.getSSID();
+        Log.d("Wifi ID", wifiSsid + "   " + wifiConnected);
+
+
         if (wifiConnected.length() > 2) {
             wifiConnected = wifiConnected.replace("\"", "");
         }

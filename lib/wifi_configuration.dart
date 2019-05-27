@@ -27,7 +27,7 @@ class WifiConfiguration {
   }
 
   static Future<bool> isConnectedToWifi(String ssid) async {
-    final bool isConnected = await _channel.invokeMethod('isConnectedToWifi');
+    final bool isConnected = await _channel.invokeMethod('isConnectedToWifi',<String, dynamic>{"ssid": ssid});
     return isConnected;
   }
 
