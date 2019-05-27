@@ -12,7 +12,14 @@ class MyApp extends StatefulWidget {
 }
 
 
-
+//enum wifiStatus {
+//  conected,
+//alreadyConnected,
+//notConnected ,
+//platformNotSupported,
+//profileAlreadyInstalled,
+//
+//}
 
 class _MyAppState extends State<MyApp> {
   String _platformVersion = 'Unknown';
@@ -26,13 +33,40 @@ class _MyAppState extends State<MyApp> {
 void getConnectionState() async {
   var listAvailableWifi = await WifiConfiguration.getWifiList();
   print("get wifi list : " + listAvailableWifi.toString());
-    bool connectionState = await WifiConfiguration.connectToWifi("AndroidAPAF", "feedh@12345");
+  String connectionState = await WifiConfiguration.connectToWifi("AndroidAPAF", "feedh@12345");
     print("is Connected : ${connectionState}");
 
+
+    switch (connectionState) {
+      case "connected":
+        print("connected");
+        break;
+
+      case "alreadyConnected":
+        print("alreadyConnected");
+        break;
+
+      case "notConnected":
+        print("notConnected");
+        break;
+
+      case "platformNotSupported":
+        print("platformNotSupported");
+        break;
+
+      case "profileAlreadyInstalled":
+        print("profileAlreadyInstalled");
+        break;
+
+    case "locationNotAllowed":
+      print("locationNotAllowed");
+      break;
+    }
+
+    bool isConnected = await WifiConfiguration.isConnectedToWifi("AndroidAPAF");
+    print("coneection status ${isConnected}");
+
 }
-
-
-
 
   @override
   Widget build(BuildContext context) {

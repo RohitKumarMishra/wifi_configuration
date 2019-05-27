@@ -3,24 +3,40 @@ import UIKit
 import NetworkExtension
 import SystemConfiguration.CaptiveNetwork
 
+enum WifiStatus: String {
+    case connected = "connected"
+    case alreadyConnected = "alreadyConnected"
+    case notConnected = "notConnected"
+    case platformNotSupported = "platformNotSupported"
+    case profileAlreadyInstalled = "profileAlreadyInstalled"
+    
+    func stringValue() -> String {
+        return self.rawValue
+    }
+}
+
+
 public class SwiftWifiConfigurationPlugin: NSObject, FlutterPlugin {
     
     
     
-      public static func register(with registrar: FlutterPluginRegistrar) {
+    public static func register(with registrar: FlutterPluginRegistrar) {
         let channel = FlutterMethodChannel(name: "wifi_configuration", binaryMessenger: registrar.messenger())
         let instance = SwiftWifiConfigurationPlugin()
         registrar.addMethodCallDelegate(instance, channel: channel)
-      }
+    }
     
     
-
+    
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
         if "connectToWifi" == call.method {
             var map = call.arguments as? Dictionary<String, String>
             self.connectToWifi(result: result, ssid: map?["ssid"] ?? "", password: map?["password"] ?? "");
         } else if "getWifiList" == call.method {
             self.getWifiList(result: result);
+        } else if "isConnectedToWifi" == call.method {
+            var map = call.arguments as? Dictionary<String, String>
+            self.isConnectedToCorrectWifi(wifiToCompareWith: map?["ssid"] ?? "");
         }
     }
     
@@ -37,32 +53,32 @@ public class SwiftWifiConfigurationPlugin: NSObject, FlutterPlugin {
                 print("error in connection \(error)")
                 if error != nil {
                     if error?.localizedDescription == "already associated." {
-                        result(false);
+                        result(WifiStatus.alreadyConnected.stringValue());
                     } else {
                         if (error! as NSError).code == 10 {
                             //TODO: Add alert which will show the instructions to delete the installed profile
-                            result(false)
+                            result(WifiStatus.profileAlreadyInstalled)
                         }
-                        result(false)
+                        result(WifiStatus.notConnected.stringValue())
                     }
                 }
                 else {
-                    DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 10.0) {
-                        
-                        if self.isConnectedToCorrectWifi(wifiToCompareWith: ssid) {
-                            print("connected to correct ssid")
-                            result(true)
-                        } else {
-                            print("not connected to correct ssid")
-                            result(false)
-                        }
-                        
+                    print("ssid to check with \(ssid)")
+                    
+                    if self.isConnectedToCorrectWifi(wifiToCompareWith: ssid) {
+                        print("connected to correct ssid")
+                        result(WifiStatus.connected.stringValue())
+                    } else {
+                        print("not connected to correct ssid")
+                        result(WifiStatus.notConnected.stringValue())
                     }
+                    
+                    
                 }
                 
             }
         } else {
-            result(false)
+            result(WifiStatus.notConnected.stringValue())
         }
     }
     
@@ -71,16 +87,16 @@ public class SwiftWifiConfigurationPlugin: NSObject, FlutterPlugin {
     public func getWifiList(result: @escaping FlutterResult) {
         var arrWifiSSID = [String]();
         if #available(iOS 11.0, *) {
-        NEHotspotConfigurationManager.shared.getConfiguredSSIDs(completionHandler: { (arrConfiguredSSID) in
-            arrWifiSSID  = arrConfiguredSSID
-            print("list of available wifi is : ", arrWifiSSID)
-            result(arrWifiSSID);
-        })
+            NEHotspotConfigurationManager.shared.getConfiguredSSIDs(completionHandler: { (arrConfiguredSSID) in
+                arrWifiSSID  = arrConfiguredSSID
+                print("list of available wifi is : ", arrWifiSSID)
+                result(arrWifiSSID);
+            })
         }
     }
-
-
-
+    
+    
+    
     public func getWiFiSSID() -> String? {
         var ssid: String?
         if let interfaces = CNCopySupportedInterfaces() as NSArray? {
