@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_parent"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    style="@style/AppTheme"
+    android:background="@android:color/transparent">
+
+    <RelativeLayout
+        android:id="@+id/layout_dialog"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/size_8dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/round_white_rect"
+            android:gravity="center_horizontal">
+
+
+            <LinearLayout
+                android:id="@+id/layout_success"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.example.wifi_configuration.util.CustomTextView
+                    android:id="@+id/txt_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:paddingTop="15dp"
+                    android:text="@string/permission_title"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/font_large" />
+
+            </LinearLayout>
+
+
+            <com.example.wifi_configuration.util.LightFontTextView
+                android:id="@+id/msg"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/layout_success"
+                android:background="@color/white"
+                android:gravity="center_horizontal"
+                android:lineSpacingExtra="@dimen/size_4dp"
+                android:paddingBottom="15dp"
+                android:text="@string/permission_msg"
+                android:paddingLeft="@dimen/size_15dp"
+                android:paddingRight="@dimen/size_15dp"
+                android:paddingTop="@dimen/size_5dp"
+                android:textColor="@color/transparent_black"
+                android:textSize="@dimen/font_small" />
+
+            <View
+                android:id="@+id/divider_horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_above="@+id/footer"
+                android:background="@color/gray"></View>
+
+            <LinearLayout
+                android:id="@+id/footer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/msg"
+                android:orientation="horizontal">
+
+                <com.example.wifi_configuration.util.LightFontTextView
+                    android:id="@+id/btn_ok"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal"
+                    android:paddingBottom="15dp"
+                    android:paddingTop="15dp"
+                    android:text="@string/ok_txt"
+                    android:textColor="@color/blue_50"
+                    android:textSize="@dimen/size_12dp" />
+
+                <View
+                    android:id="@+id/seperator"
+                    android:layout_width="1px"
+                    android:layout_height="match_parent"
+                    android:layout_above="@+id/footer"
+                    android:background="@color/gray"
+                    android:visibility="visible"></View>
+
+                <com.example.wifi_configuration.util.LightFontTextView
+                    android:id="@+id/btn_cancel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal"
+                    android:paddingBottom="15dp"
+                    android:paddingTop="15dp"
+                    android:text="@string/cancel"
+                    android:textColor="@color/red_button"
+                    android:textSize="@dimen/size_12dp"
+                    android:visibility="gone" />
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+
+    </RelativeLayout>
+</RelativeLayout>
+
+

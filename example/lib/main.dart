@@ -14,7 +14,7 @@ class MyApp extends StatefulWidget {
 
 //enum wifiStatus {
 //  conected,
-//alreadyConnected,
+//alreadyConnected,.
 //notConnected ,
 //platformNotSupported,
 //profileAlreadyInstalled,
@@ -33,7 +33,7 @@ class _MyAppState extends State<MyApp> {
 void getConnectionState() async {
   var listAvailableWifi = await WifiConfiguration.getWifiList();
   print("get wifi list : " + listAvailableWifi.toString());
-  String connectionState = await WifiConfiguration.connectToWifi("DBWSN5", "DarkBe@rs");
+  String connectionState = await WifiConfiguration.connectToWifi("fdfdf", "DarkBe@rs", "com.example.wifi_configuration_example");
     print("is Connected : ${connectionState}");
 
 

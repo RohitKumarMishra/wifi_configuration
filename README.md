@@ -32,20 +32,65 @@ Add below Permissions to your manifist.xml file -
 
 ```dart
   import 'package:wifi_configuration/wifi_configuration.dart';
-
-  var listAvailableWifi = await WifiConfiguration.getWifiList();
-  //If wifi is available then device will get connected
-  //In case of ios you will not get list of connected wifi an empty list will be available
-  //As Apple does not allow to scan the available hotspot list
-  //If you try to access with private api's then apple will reject the app
-
-  bool connectionState = await WifiConfiguration.connectToWifi("Wifi ssid", "Wifi Pass");
-  //This will return a boolean value
+  
+  
+  
+    String connectionState = await WifiConfiguration.connectToWifi("ssidName", "passName", "your android packagename");
+    //This will return state of a connection
+    //Package name is required to redirect user to application permission settings page to let user allow location permission
+    //in case connecting with wifi
+  
+  
+        switch (connectionState) {
+          case "connected":
+            print("connected");
+            break;
+            //in case of wifi successfully connected
+  
+          case "alreadyConnected":
+            print("alreadyConnected");
+            break;
+            //in case wifi already connected
+            //Only returned in ios
+  
+          case "notConnected":
+            print("notConnected");
+            break;
+            //in case when wifi not availabel or not able to connect to specific wifi
+            //when not connected status returned in android user will be directed to wifi settings of device to select the exact wifi to connect.
+  
+          case "profileAlreadyInstalled":
+            print("profileAlreadyInstalled");
+            break;
+           //in case of wifi configuration profile is installed already
+           //Only returned in ios
+  
+        case "locationNotAllowed":
+          print("locationNotAllowed");
+          break;
+          //in case location permission rejected
+          //Only returned in android
+        }
+  
+  
+        var listAvailableWifi = await WifiConfiguration.getWifiList();
+          //If wifi is available then device will get connected
+          //In case of ios you will not get list of connected wifi an empty list will be available
+          //As Apple does not allow to scan the available hotspot list
+          //If you try to access with private api's then apple will reject the app
+  
+  
+        bool isConnected = await WifiConfiguration.isConnectedToWifi("ssidName");
+        //to get status if device connected to some wifi
+        
+        String isConnected = await WifiConfiguration.connectedToWifi();
+                //to get current connected wifi name
+        
 ```
+If user has not aloowed the location permission for this app then it will ask everytime app try to connect to wifi for the location permission.
 
 
-
-When you use connection on iOS (iOS 11 only)
+When you use connection on iOS (iOS 11 and above only)
 
 1. 'build Phass' -> 'Link Binay With Libraries' add 'NetworkExtension.framework'
 

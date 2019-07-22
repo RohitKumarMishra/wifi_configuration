@@ -1,3 +1,3 @@
-## 0.0.7
+## 1.0.4
 
-Added ios support.
+Added support to return name of current connected wifi.

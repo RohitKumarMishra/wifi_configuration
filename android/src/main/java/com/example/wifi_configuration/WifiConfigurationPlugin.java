@@ -1,15 +1,28 @@
 package com.example.wifi_configuration;
 
 import android.Manifest;
-import android.app.Activity;
+import android.app.Dialog;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.net.wifi.ScanResult;
-import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
-import android.support.v4.app.ActivityCompat;
+import android.provider.Settings;
 import android.util.Log;
+import android.view.View;
+import android.view.Window;
+import android.widget.TextView;
+
+import androidx.core.app.ActivityCompat;
+
+import com.example.wifi_configuration.connect.ConnectionSuccessListener;
+import com.example.wifi_configuration.manager.WifiUtils;
+import com.example.wifi_configuration.util.Constant;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,12 +34,6 @@ import io.flutter.plugin.common.MethodChannel.Result;
 import io.flutter.plugin.common.PluginRegistry;
 import io.flutter.plugin.common.PluginRegistry.Registrar;
 
-import com.example.wifi_configuration.connect.ConnectionSuccessListener;
-import com.example.wifi_configuration.connect.WifiCallback;
-import com.example.wifi_configuration.manager.WifiUtils;
-import com.example.wifi_configuration.util.Constant;
-
-import static com.example.wifi_configuration.PermissionHelper.FINE_LOCATION_PERMISSION;
 
 /**
  *
@@ -49,8 +56,9 @@ public class WifiConfigurationPlugin implements MethodCallHandler {
 
     private static WifiUtils wifiUtils;
     private static Registrar registrar;
+    private static boolean isLocationPermissionAllowed = false;
 
-     /** Plugin registration. */
+    /** Plugin registration. */
     public static void registerWith(Registrar registrar) {
         WifiConfigurationPlugin.registrar =  registrar;
         final MethodChannel channel = new MethodChannel(registrar.messenger(), "wifi_configuration");
@@ -61,11 +69,14 @@ public class WifiConfigurationPlugin implements MethodCallHandler {
         registrar.addRequestPermissionsResultListener(new PluginRegistry.RequestPermissionsResultListener() {
             @Override
             public boolean onRequestPermissionsResult(int id, String[] permissions, int[] grantResults) {
-                if (id == FINE_LOCATION_PERMISSION) {
-                            if (grantResults.length > 0) {
-                                boolean locationAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
-                                locationPermissionCallbck(locationAccepted);
-                            }
+                if (id == PermissionHelper.FINE_LOCATION_PERMISSION) {
+                    if (grantResults.length > 0) {
+                        boolean locationAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+                        isLocationPermissionAllowed = locationAccepted;
+                        locationPermissionCallbck(locationAccepted);
+
+
+                    }
                     return true;
                 } else {
                     return false;
@@ -89,7 +100,16 @@ public class WifiConfigurationPlugin implements MethodCallHandler {
          */
         Constant.result = result;
         Constant.methodCalled = call;
-        requestLocationPermission();
+        if (Constant.methodCalled.method.equals("connectToWifi")) {
+            requestLocationPermission();
+        } else if (Constant.methodCalled.method.equals("getWifiList")) {
+            Constant.result.success(getAvailableWifiList());
+
+        } else if (Constant.methodCalled.method.equals("isConnectedToWifi")) {
+            Constant.result.success(isWifiConnected(Constant.methodCalled.argument("ssid")));
+        } else if (Constant.methodCalled.method.equals("connectedToWifi")) {
+            Constant.result.success(connectedToWifi());
+        }
     }
 
 
@@ -114,7 +134,8 @@ public class WifiConfigurationPlugin implements MethodCallHandler {
                         if (isSuccess) {
                             result.success(WifiStatus.connected.name());
                         } else {
-                            result.success(WifiStatus.notConnected.name());
+                            openWifiSetting();
+                            // result.success(WifiStatus.notConnected.name());
                         }
 
 
@@ -141,7 +162,7 @@ public class WifiConfigurationPlugin implements MethodCallHandler {
             }
             return wifiList;
         }
-        return null;
+        return wifiList;
     }
 
 
@@ -150,32 +171,25 @@ public class WifiConfigurationPlugin implements MethodCallHandler {
 
         String []permissions = {Manifest.permission.ACCESS_FINE_LOCATION};
         if (!PermissionHelper.checkFineLocationPermission(Constant.activity)) {
-            ActivityCompat.requestPermissions(registrar.activity(), permissions, FINE_LOCATION_PERMISSION);
+            ActivityCompat.requestPermissions(registrar.activity(), permissions, PermissionHelper.FINE_LOCATION_PERMISSION);
         } else {
+            isLocationPermissionAllowed = true;
             getWifiData();
         }
     }
 
 
     public static void locationPermissionCallbck(boolean success) {
-        if ( success) {
-            getWifiData();
-        } else {
-            Log.e("Permissions", WifiStatus.locationNotAllowed.name());
-            Constant.result.success(WifiStatus.locationNotAllowed.name());
-        }
+        getWifiData();
     }
 
     private static void getWifiData(){
         if (Constant.methodCalled.method.equals("connectToWifi")) {
-            connectWithWPA(Constant.methodCalled.argument("ssid"), Constant.methodCalled.argument("password"), Constant.context, Constant.result);
-
-        } else if (Constant.methodCalled.method.equals("getWifiList")) {
-            Constant.result.success(getAvailableWifiList());
-
-        } else if (Constant.methodCalled.method.equals("isConnectedToWifi")) {
-            Constant.result.success(isWifiConnected(Constant.methodCalled.argument("ssid")));
-
+            if (isLocationPermissionAllowed)
+                connectWithWPA(Constant.methodCalled.argument("ssid"), Constant.methodCalled.argument("password"),Constant.context, Constant.result);
+            else {
+                openAppSettings();
+            }
         }
     }
 
@@ -200,5 +214,73 @@ public class WifiConfigurationPlugin implements MethodCallHandler {
         }
         return isWifiConnect;
     }
+
+    private static void openAppSettings(){
+
+        showAletDialog();
+
+    }
+
+    private static void showAletDialog(){
+
+        final Dialog dialog = new Dialog(Constant.activity);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.setCancelable(false);
+        dialog.setContentView(R.layout.dialog_ok);
+
+        TextView txtOk = (TextView) dialog.findViewById(R.id.btn_ok);
+
+        txtOk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                Intent intent = new Intent();
+                intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                Uri uri = Uri.fromParts("package", Constant.methodCalled.argument("packageName"), null);
+                intent.setData(uri);
+                Constant.activity.startActivity(intent);
+                Constant.result.success(WifiStatus.locationNotAllowed.name());
+            }
+        });
+
+        dialog.show();
+
+    }
+
+
+    public static void openWifiSetting() {
+        try {
+            Intent intent = new Intent(Intent.ACTION_MAIN, null);
+            intent.addCategory(Intent.CATEGORY_LAUNCHER);
+            ComponentName cn = new ComponentName("com.android.settings", "com.android.settings.wifi.WifiSettings");
+            intent.setComponent(cn);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            Constant.activity.startActivity(intent);
+            Constant.result.success(WifiStatus.notConnected.name());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public static String connectedToWifi() {
+
+        WifiManager wifiManager = (WifiManager) Constant.context.getSystemService (Context.WIFI_SERVICE);
+        WifiInfo info = wifiManager.getConnectionInfo ();
+        String wifiConnected = info.getSSID();
+        Log.d("Wifi ID", wifiSsid + "   " + wifiConnected);
+
+
+        if (wifiConnected.length() > 2) {
+            wifiConnected = wifiConnected.replace("\"", "");
+            return wifiConnected;
+        } else {
+            return "";
+        }
+
+    }
+
 
 }

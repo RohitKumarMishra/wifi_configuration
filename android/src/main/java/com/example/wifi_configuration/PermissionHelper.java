@@ -6,33 +6,17 @@ package com.example.wifi_configuration;
 
 
 import android.Manifest;
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.LocationManager;
 import android.net.Uri;
-import android.os.AsyncTask;
-import android.os.Build;
 import android.provider.Settings;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 
-import static android.Manifest.permission.ACCESS_FINE_LOCATION;
-import static android.Manifest.permission.CAMERA;
-import static android.content.pm.PackageManager.PERMISSION_GRANTED;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
-/**
- * Helper class for runtime permission of Android M.<br>
- * Created based on the information of <b>M Preview2</b>.
- * <p>
- * Reference: <a href="https://github.com/googlesamples/android-RuntimePermissions">Android RuntimePermissions Sample</a>
- * </p>
- *
- * @author kumagai
- */
+
 public final class PermissionHelper {
 
     private static final String MNC = "MNC";
@@ -91,7 +75,7 @@ public final class PermissionHelper {
     /**
      * open android settings screen for your app.
      */
-    public static void openSettingsScreen(@NonNull Context context) {
+    public static void openSettingsScreen(Context context) {
         Intent intent = new Intent();
         intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
         Uri uri = Uri.parse("package:" + context.getPackageName());
