@@ -31,40 +31,41 @@ class _MyAppState extends State<MyApp> {
   }
 
 void getConnectionState() async {
-  var listAvailableWifi = await WifiConfiguration.getWifiList();
-  print("get wifi list : " + listAvailableWifi.toString());
-  String connectionState = await WifiConfiguration.connectToWifi("fdfdf", "DarkBe@rs", "com.example.wifi_configuration_example");
-    print("is Connected : ${connectionState}");
+ var listAvailableWifi = await WifiConfiguration.getWifiList();
+ print("get wifi list : " + listAvailableWifi.toString());
+ String connectionState = await WifiConfiguration.connectToWifi("fdfdf", "DarkBe@rs", "com.example.wifi_configuration_example");
+   print("is Connected : ${connectionState}");
+//
+//
+   switch (connectionState) {
+     case "connected":
+       print("connected");
+       break;
 
+     case "alreadyConnected":
+       print("alreadyConnected");
+       break;
 
-    switch (connectionState) {
-      case "connected":
-        print("connected");
-        break;
+     case "notConnected":
+       print("notConnected");
+       break;
 
-      case "alreadyConnected":
-        print("alreadyConnected");
-        break;
+     case "platformNotSupported":
+       print("platformNotSupported");
+       break;
 
-      case "notConnected":
-        print("notConnected");
-        break;
+     case "profileAlreadyInstalled":
+       print("profileAlreadyInstalled");
+       break;
 
-      case "platformNotSupported":
-        print("platformNotSupported");
-        break;
-
-      case "profileAlreadyInstalled":
-        print("profileAlreadyInstalled");
-        break;
-
-    case "locationNotAllowed":
-      print("locationNotAllowed");
-      break;
-    }
-
-    bool isConnected = await WifiConfiguration.isConnectedToWifi("DBWSN5");
-    print("coneection status ${isConnected}");
+   case "locationNotAllowed":
+     print("locationNotAllowed");
+     break;
+   }
+//
+//    bool isConnected = await WifiConfiguration.isConnectedToWifi("DBWSN5");
+  // String connectionState = await WifiConfiguration.connectedToWifi();
+  //   print("coneection status ${connectionState}");
 
 }
 

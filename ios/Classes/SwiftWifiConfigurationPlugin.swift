@@ -37,6 +37,8 @@ public class SwiftWifiConfigurationPlugin: NSObject, FlutterPlugin {
         } else if "isConnectedToWifi" == call.method {
             var map = call.arguments as? Dictionary<String, String>
             result(self.isConnectedToCorrectWifi(wifiToCompareWith: map?["ssid"] ?? ""));
+        } else if "connectedToWifi" == call.method {
+            result(self.connectedToWifi());
         }
     }
     
@@ -118,6 +120,16 @@ public class SwiftWifiConfigurationPlugin: NSObject, FlutterPlugin {
             return (wifi == deviceCurrentSSID)
         } else {
             return false
+        }
+    }
+    
+    public func connectedToWifi() -> String{
+        
+        if let deviceCurrentSSID = self.getWiFiSSID() {
+            print("is connected to wifi and \(deviceCurrentSSID)")
+            return deviceCurrentSSID
+        } else {
+            return ""
         }
     }
     

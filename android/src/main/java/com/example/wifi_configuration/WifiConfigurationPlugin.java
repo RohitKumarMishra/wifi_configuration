@@ -108,7 +108,8 @@ public class WifiConfigurationPlugin implements MethodCallHandler {
         } else if (Constant.methodCalled.method.equals("isConnectedToWifi")) {
             Constant.result.success(isWifiConnected(Constant.methodCalled.argument("ssid")));
         } else if (Constant.methodCalled.method.equals("connectedToWifi")) {
-            Constant.result.success(connectedToWifi());
+            requestLocationPermissionForConnectedWifiName();
+
         }
     }
 
@@ -174,23 +175,50 @@ public class WifiConfigurationPlugin implements MethodCallHandler {
             ActivityCompat.requestPermissions(registrar.activity(), permissions, PermissionHelper.FINE_LOCATION_PERMISSION);
         } else {
             isLocationPermissionAllowed = true;
-            getWifiData();
+            getWifiData(true);
+        }
+    }
+
+
+    private void requestLocationPermissionForConnectedWifiName() {
+
+        String []permissions = {Manifest.permission.ACCESS_FINE_LOCATION};
+        if (!PermissionHelper.checkFineLocationPermission(Constant.activity)) {
+            ActivityCompat.requestPermissions(registrar.activity(), permissions, PermissionHelper.FINE_LOCATION_PERMISSION);
+
+        } else {
+            isLocationPermissionAllowed = true;
+            Constant.result.success(this.connectedToWifi());
         }
     }
 
 
     public static void locationPermissionCallbck(boolean success) {
-        getWifiData();
+        getWifiData(success);
     }
 
-    private static void getWifiData(){
+    private static void getWifiData(boolean success){
         if (Constant.methodCalled.method.equals("connectToWifi")) {
             if (isLocationPermissionAllowed)
                 connectWithWPA(Constant.methodCalled.argument("ssid"), Constant.methodCalled.argument("password"),Constant.context, Constant.result);
             else {
                 openAppSettings();
             }
+        } else if (Constant.methodCalled.method.equals("connectToWifi")) {
+            if (isLocationPermissionAllowed)
+                connectedToWifi();
+            else {
+                openAppSettings();
+            }
+        }else if (Constant.methodCalled.method.equals("connectedToWifi")) {
+            if (success) {
+                Constant.result.success(connectedToWifi());
+            } else {
+                Constant.result.success("Please allow location to get wifi name");
+            }
+
         }
+
     }
 
 
@@ -269,15 +297,18 @@ public class WifiConfigurationPlugin implements MethodCallHandler {
 
         WifiManager wifiManager = (WifiManager) Constant.context.getSystemService (Context.WIFI_SERVICE);
         WifiInfo info = wifiManager.getConnectionInfo ();
-        String wifiConnected = info.getSSID();
-        Log.d("Wifi ID", wifiSsid + "   " + wifiConnected);
+        String connectedWifi = info.getSSID();
 
+        if (connectedWifi.length() > 2 ) {
+            if (connectedWifi == "<unknown ssid>" || connectedWifi.contains("<")) {
+                return "";
+            } else {
+                connectedWifi = connectedWifi.replace("\"", "");
+                return (connectedWifi);
+            }
 
-        if (wifiConnected.length() > 2) {
-            wifiConnected = wifiConnected.replace("\"", "");
-            return wifiConnected;
         } else {
-            return "";
+            return ("");
         }
 
     }
