@@ -7,6 +7,7 @@ import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -80,6 +81,7 @@ public class WifiConnectionManage {
 
     private void connectWiFi(final Activity activity,
                              final String ssid, ScanResult scanResult, final Context context, String password) {
+        Log.e("wifi_configuration_WifiConnection", "with ssid " + ssid + "and password " + password);
         try {
             String networkSSID = scanResult.SSID;
             String networkPass = password;
@@ -137,6 +139,7 @@ public class WifiConnectionManage {
 
             WifiManager wifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
             int networkId = wifiManager.addNetwork(conf);
+            WifiUtils.wifiLog("network id");
             List<WifiConfiguration> list = wifiManager.getConfiguredNetworks();
             for (WifiConfiguration i : list) {
                 if (i.SSID != null && i.SSID.equals("\"" + networkSSID + "\"")) {

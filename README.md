@@ -35,42 +35,37 @@ Add below Permissions to your manifist.xml file -
   
   
   
-    String connectionState = await WifiConfiguration.connectToWifi("ssidName", "passName", "your android packagename");
+    WifiConnectionStatus connectionStatus = await WifiConfiguration.connectToWifi("ssidName", "passName", "your android packagename");
     //This will return state of a connection
     //Package name is required to redirect user to application permission settings page to let user allow location permission
     //in case connecting with wifi
   
   
-        switch (connectionState) {
-          case "connected":
-            print("connected");
-            break;
-            //in case of wifi successfully connected
-  
-          case "alreadyConnected":
-            print("alreadyConnected");
-            break;
-            //in case wifi already connected
-            //Only returned in ios
-  
-          case "notConnected":
-            print("notConnected");
-            break;
-            //in case when wifi not availabel or not able to connect to specific wifi
-            //when not connected status returned in android user will be directed to wifi settings of device to select the exact wifi to connect.
-  
-          case "profileAlreadyInstalled":
-            print("profileAlreadyInstalled");
-            break;
-           //in case of wifi configuration profile is installed already
-           //Only returned in ios
-  
-        case "locationNotAllowed":
-          print("locationNotAllowed");
-          break;
-          //in case location permission rejected
-          //Only returned in android
-        }
+        switch (connectionStatus) {
+              case WifiConnectionStatus.connected:
+                print("connected");
+                break;
+        
+              case WifiConnectionStatus.alreadyConnected:
+                print("alreadyConnected");
+                break;
+        
+              case WifiConnectionStatus.notConnected:
+                print("notConnected");
+                break;
+        
+              case WifiConnectionStatus.platformNotSupported:
+                print("platformNotSupported");
+                break;
+        
+              case WifiConnectionStatus.profileAlreadyInstalled:
+                print("profileAlreadyInstalled");
+                break;
+        
+              case WifiConnectionStatus.locationNotAllowed:
+                print("locationNotAllowed");
+                break;
+            }
   
   
         var listAvailableWifi = await WifiConfiguration.getWifiList();
@@ -105,3 +100,5 @@ If you want to use Wifi.list on iOS,
 For help getting started with Flutter, view our 
 [online documentation](https://flutter.dev/docs), which offers tutorials, 
 samples, guidance on mobile development, and a full API reference.
+### Sponsored by Jaaga Soft
+

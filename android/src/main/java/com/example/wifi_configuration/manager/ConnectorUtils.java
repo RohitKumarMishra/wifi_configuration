@@ -10,6 +10,7 @@ import android.net.wifi.WifiManager;
 import android.net.wifi.WpsInfo;
 import android.os.Build;
 import android.provider.Settings;
+import android.util.Log;
 
 import android.text.TextUtils;
 
@@ -157,6 +158,7 @@ public final class ConnectorUtils {
     }
 
     static boolean connectToWifi( Context context,  WifiManager wifiManager,  ScanResult scanResult,  String password) {
+        Log.e("wifi_configuration_WifiConnection", "with ssid " + " and password " + password);
         WifiConfiguration config = ConfigSecurities.getWifiConfiguration(wifiManager, scanResult);
         if (config != null && password.isEmpty()) {
             WifiUtils.wifiLog("PASSWORD WAS EMPTY. TRYING TO CONNECT TO EXISTING NETWORK CONFIGURATION");
@@ -233,6 +235,8 @@ public final class ConnectorUtils {
         // We have to retrieve the WifiConfiguration after save.
         config = ConfigSecurities.getWifiConfiguration(wifiManager, config);
         return config != null && disableAllButOne(wifiManager, config) && (reassociate ? wifiManager.reassociate() : wifiManager.reconnect());
+//
+
 
     }
 
@@ -245,8 +249,10 @@ public final class ConnectorUtils {
         for (WifiConfiguration wifiConfig : configurations)
             if (wifiConfig.networkId == config.networkId)
                 result = wifiManager.enableNetwork(wifiConfig.networkId, true);
-            else
-                wifiManager.disableNetwork(wifiConfig.networkId);
+            else {
+                continue;
+//                wifiManager.disableNetwork(wifiConfig.networkId);
+            }
         WifiUtils.wifiLog("disableAllButOne " + result);
         return result;
     }

@@ -1,3 +1,5 @@
-## 1.0.14
+## 1.2.0
 
-Added Android location permission for connected wifi name(Mandatory for Android 9.0 and above).
+Added location turn on feature for android also added connection status as enum that will help to cover all 
+available response cases from plugin.
+

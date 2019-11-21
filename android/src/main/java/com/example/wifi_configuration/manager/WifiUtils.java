@@ -150,6 +150,7 @@ public final class WifiUtils implements WifiConnectorBuilder,
         @Override
         public void successfulConnect() {
             wifiLog("CONNECTED SUCCESSFULLY");
+            Log.e("wifi_configuration", "connected successfully");
             unregisterReceiver(mContext, mWifiConnectionReceiver);
             //reenableAllHotspots(mWifiManager);
             of(mConnectionSuccessListener).ifPresent(successListener -> successListener.isSuccessful(true));
@@ -163,6 +164,7 @@ public final class WifiUtils implements WifiConnectorBuilder,
             //cleanPreviousConfiguration(mWifiManager, mSingleScanResult);
             of(mConnectionSuccessListener).ifPresent(successListener -> {
                 successListener.isSuccessful(false);
+                Log.e("wifi_configuration", "not connected successfully");
                 wifiLog("DIDN'T CONNECT TO WIFI");
             });
         }
@@ -183,7 +185,7 @@ public final class WifiUtils implements WifiConnectorBuilder,
     }
 
     public static void wifiLog(final String text) {
-        if (mEnableLog)
+//        if (mEnableLog)
             Log.d(TAG, "WifiUtils: " + text);
     }
 
@@ -194,9 +196,12 @@ public final class WifiUtils implements WifiConnectorBuilder,
     @Override
     public void enableWifi( final WifiStateListener wifiStateListener) {
         mWifiStateListener = wifiStateListener;
-        if (mWifiManager.isWifiEnabled())
+        if (mWifiManager.isWifiEnabled()) {
+            Log.e("wifiUtils", "wifi already enabled");
             mWifiStateCallback.onWifiEnabled();
+        }
         else {
+            Log.e("wifiUtils", "wifi enabling");
             if (mWifiManager.setWifiEnabled(true))
                 registerReceiver(mContext, mWifiStateReceiver, new IntentFilter(WifiManager.WIFI_STATE_CHANGED_ACTION));
             else {
