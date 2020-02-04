@@ -87,7 +87,7 @@ If user has not aloowed the location permission for this app then it will ask ev
 
 When you use connection on iOS (iOS 11 and above only)
 
-1. 'build Phass' -> 'Link Binay With Libraries' add 'NetworkExtension.framework'
+1. 'Build Phases' -> 'Link Binay With Libraries' add 'NetworkExtension.framework'
 
 2. in 'Capabilities' open 'Hotspot Configuration'
 
