@@ -56,6 +56,10 @@ class WifiConfiguration {
     }
   }
 
+  static Future<void> disconnectFromWifi() async {
+    await _channel.invokeMethod('disconnectFromWifi');
+  }
+
   static Future<List<dynamic>> getWifiList() async {
     final List<dynamic> wifiList = await _channel.invokeMethod('getWifiList');
     return wifiList;

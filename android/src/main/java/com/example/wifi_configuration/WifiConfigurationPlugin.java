@@ -169,6 +169,9 @@ public class WifiConfigurationPlugin implements MethodCallHandler {
         } else if (Constant.methodCalled.method.equals("connectedToWifi")) {
             requestLocationPermissionForConnectedWifiName();
 
+        } else if (Constant.methodCalled.method.equals("disconnectFromWifi")) {
+            disconnectFromWifi();
+
         }
     }
 
@@ -226,6 +229,11 @@ public class WifiConfigurationPlugin implements MethodCallHandler {
         return wifiList;
     }
 
+
+    private static void disconnectFromWifi(){
+        WifiManager wifiManager = (WifiManager) Constant.context.getSystemService (Context.WIFI_SERVICE);
+        wifiManager.disconnect();
+    }
 
 
     private void requestLocationPermission() {
