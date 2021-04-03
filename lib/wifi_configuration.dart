@@ -56,8 +56,8 @@ class WifiConfiguration {
     }
   }
 
-  static Future<List<dynamic>> getWifiList() async {
-    final List<dynamic> wifiList = await _channel.invokeMethod('getWifiList');
+  static Future<dynamic> getWifiList() async {
+    final wifiList = await _channel.invokeMethod('getWifiList');
     return wifiList;
   }
 
