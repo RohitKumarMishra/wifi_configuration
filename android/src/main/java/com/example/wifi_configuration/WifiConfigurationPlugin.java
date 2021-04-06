@@ -224,8 +224,8 @@ public class WifiConfigurationPlugin implements MethodCallHandler {
 
             for (ScanResult wifiName : wifiUtils.getScanWifiResult()
             ) {
-                Log.e("WifiUtils---- SSID>", wifiName.SSID);
-                Log.e("WifiUtils----BSSID>", wifiName.BSSID);
+//                 Log.e("WifiUtils---- SSID>", wifiName.SSID);
+//                 Log.e("WifiUtils----BSSID>", wifiName.BSSID);
 
                 wifiList.add(wifiName.SSID);
                 wifiMacList.add(wifiName.BSSID);
