@@ -51,6 +51,8 @@ import io.flutter.plugin.common.PluginRegistry.ActivityResultListener;
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
 
+import java.util.HashMap;
+
 
 /**
  *
@@ -211,20 +213,32 @@ public class WifiConfigurationPlugin implements MethodCallHandler {
      *
      * @return
      */
-    private  static List<String> getAvailableWifiList() {
+    private  static HashMap<String,List<String>> getAvailableWifiList() {
+
+        HashMap<String,List<String>> map = new HashMap<>();
+
         List<String> wifiList = new ArrayList<String>();
+        List<String> wifiMacList = new ArrayList<String>();
+
         if (wifiUtils.getScanWifiResult() != null){
-            Log.d("WifiResults-->", wifiUtils.getScanWifiResult()+"");
 
             for (ScanResult wifiName : wifiUtils.getScanWifiResult()
             ) {
-                Log.d("WifiUtils", wifiName.SSID);
+//                 Log.e("WifiUtils---- SSID>", wifiName.SSID);
+//                 Log.e("WifiUtils----BSSID>", wifiName.BSSID);
+
                 wifiList.add(wifiName.SSID);
+                wifiMacList.add(wifiName.BSSID);
             }
-            return wifiList;
+
+            map.put("SSIDS",wifiList);
+            map.put("MACADD",wifiMacList);
+
+            return map;
         }
-        return wifiList;
+        return map;
     }
+
 
 
 
