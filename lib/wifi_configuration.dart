@@ -29,31 +29,28 @@ class WifiConfiguration {
       "password": password,
       "packageName": packageName
     });
+    WifiConnectionStatus? status;
     switch (isConnected) {
       case "connected":
-        return WifiConnectionStatus.connected;
+        status = WifiConnectionStatus.connected;
         break;
-
       case "alreadyConnected":
-        return WifiConnectionStatus.alreadyConnected;
+        status = WifiConnectionStatus.alreadyConnected;
         break;
-
       case "notConnected":
-        return WifiConnectionStatus.notConnected;
+        status = WifiConnectionStatus.notConnected;
         break;
-
       case "platformNotSupported":
-        return WifiConnectionStatus.platformNotSupported;
+        status = WifiConnectionStatus.platformNotSupported;
         break;
-
       case "profileAlreadyInstalled":
-        return WifiConnectionStatus.profileAlreadyInstalled;
+        status = WifiConnectionStatus.profileAlreadyInstalled;
         break;
-
       case "locationNotAllowed":
-        return WifiConnectionStatus.locationNotAllowed;
+        status = WifiConnectionStatus.locationNotAllowed;
         break;
     }
+    return status!;
   }
 
   static Future<List<dynamic>> getWifiList() async {

@@ -1,7 +1,13 @@
 .DS_Store
 .dart_tool/
+.vscode
 
 .packages
 .pub/
+
+.project
+.settings
+.flutter-plugins-dependencies
+flutter_export_environment.sh
 
 build/
