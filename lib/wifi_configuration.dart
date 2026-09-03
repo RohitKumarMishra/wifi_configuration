@@ -1,72 +1,86 @@
-import 'dart:async';
+import 'wifi_configuration_platform_interface.dart';
 
-import 'package:flutter/services.dart';
-
+/// Result of a [WifiConfiguration.connectToWifi] attempt.
 enum WifiConnectionStatus {
+  /// Joined the requested network.
   connected,
+
+  /// Already associated with that SSID.
   alreadyConnected,
+
+  /// Could not join the network.
   notConnected,
+
+  /// This platform or OS version cannot configure Wi-Fi.
   platformNotSupported,
+
+  /// An iOS configuration profile for this SSID is already installed.
   profileAlreadyInstalled,
+
+  /// Location permission or location services are required and were denied.
   locationNotAllowed,
 }
 
+/// Connect to Wi-Fi, inspect the current SSID, and list nearby networks.
+///
+/// Android uses [WifiNetworkSpecifier] on API 29+ and the older
+/// `WifiConfiguration` APIs below that. iOS uses `NEHotspotConfiguration`.
 class WifiConfiguration {
-  static const MethodChannel _channel =
-      const MethodChannel('wifi_configuration');
+  WifiConfiguration._();
 
-  static Future<String> get platformVersion async {
-    final String version = await _channel.invokeMethod('getPlatformVersion');
-
-    return version;
+  /// OS version string, mainly for the example app and tests.
+  static Future<String?> get platformVersion {
+    return WifiConfigurationPlatform.instance.getPlatformVersion();
   }
 
+  /// Connects the device to [ssid] using [password].
+  ///
+  /// [packageName] is kept for compatibility with 1.x. On modern Android it is
+  /// unused; location is requested at runtime instead of sending the user to
+  /// app settings.
+  ///
+  /// Returns [WifiConnectionStatus.notConnected] when the platform reports an
+  /// unrecognized status string.
   static Future<WifiConnectionStatus> connectToWifi(
-      String ssid, String password, String packageName) async {
-    final String isConnected = await _channel.invokeMethod(
-        'connectToWifi', <String, dynamic>{
-      "ssid": ssid,
-      "password": password,
-      "packageName": packageName
-    });
-    WifiConnectionStatus? status;
-    switch (isConnected) {
-      case "connected":
-        status = WifiConnectionStatus.connected;
-        break;
-      case "alreadyConnected":
-        status = WifiConnectionStatus.alreadyConnected;
-        break;
-      case "notConnected":
-        status = WifiConnectionStatus.notConnected;
-        break;
-      case "platformNotSupported":
-        status = WifiConnectionStatus.platformNotSupported;
-        break;
-      case "profileAlreadyInstalled":
-        status = WifiConnectionStatus.profileAlreadyInstalled;
-        break;
-      case "locationNotAllowed":
-        status = WifiConnectionStatus.locationNotAllowed;
-        break;
-    }
-    return status!;
+    String ssid,
+    String password, [
+    String? packageName,
+  ]) async {
+    final String status = await WifiConfigurationPlatform.instance
+        .connectToWifi(
+          ssid: ssid,
+          password: password,
+          packageName: packageName,
+        );
+    return switch (status) {
+      'connected' => WifiConnectionStatus.connected,
+      'alreadyConnected' => WifiConnectionStatus.alreadyConnected,
+      'notConnected' => WifiConnectionStatus.notConnected,
+      'platformNotSupported' => WifiConnectionStatus.platformNotSupported,
+      'profileAlreadyInstalled' => WifiConnectionStatus.profileAlreadyInstalled,
+      'locationNotAllowed' => WifiConnectionStatus.locationNotAllowed,
+      _ => WifiConnectionStatus.notConnected,
+    };
   }
 
-  static Future<List<dynamic>> getWifiList() async {
-    final List<dynamic> wifiList = await _channel.invokeMethod('getWifiList');
-    return wifiList;
+  /// Nearby SSIDs on Android (requires location). On iOS, configured hotspot
+  /// SSIDs only — Apple does not allow scanning nearby networks.
+  static Future<List<String>> getWifiList() async {
+    final List<String> networks = await WifiConfigurationPlatform.instance
+        .getWifiList();
+    return networks.where((String ssid) => ssid.isNotEmpty).toList();
   }
 
-  static Future<bool> isConnectedToWifi(String ssid) async {
-    final bool isConnected = await _channel
-        .invokeMethod('isConnectedToWifi', <String, dynamic>{"ssid": ssid});
-    return isConnected;
+  /// Whether the device is currently associated with [ssid].
+  static Future<bool> isConnectedToWifi(String ssid) {
+    return WifiConfigurationPlatform.instance.isConnectedToWifi(ssid);
   }
 
-  static Future<String> connectedToWifi() async {
-    final String connectedWifiName =
-        await _channel.invokeMethod('connectedToWifi');
-    return connectedWifiName;
+  /// Current Wi-Fi SSID, or an empty string when it cannot be read.
+  ///
+  /// Android and iOS both require location permission (and on iOS, the Access
+  /// Wi-Fi Information entitlement) to return a real name.
+  static Future<String> connectedToWifi() {
+    return WifiConfigurationPlatform.instance.connectedToWifi();
   }
 }
