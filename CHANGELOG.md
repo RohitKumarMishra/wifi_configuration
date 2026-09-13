@@ -1,3 +1,8 @@
+## 2.0.1
+
+* Re-publish the Dart 3 rewrite. 2.0.0 was retracted and could not be restored
+  after the 7-day window, so it never became the public latest version.
+
 ## 2.0.0
 
 * Dart 3 / null-safety rewrite of the 1.2.1 Android and iOS plugin.

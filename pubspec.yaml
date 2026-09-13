@@ -2,7 +2,7 @@ name: wifi_configuration
 description: >-
   Connect Android and iOS devices to a Wi-Fi network, read the current SSID,
   and list available networks. Null-safe and Dart 3 compatible.
-version: 2.0.0
+version: 2.0.1
 homepage: https://github.com/RohitKumarMishra/wifi_configuration
 repository: https://github.com/RohitKumarMishra/wifi_configuration
 issue_tracker: https://github.com/RohitKumarMishra/wifi_configuration/issues

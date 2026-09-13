@@ -4,7 +4,7 @@
 #
 Pod::Spec.new do |s|
   s.name             = 'wifi_configuration'
-  s.version          = '2.0.0'
+  s.version          = '2.0.1'
   s.summary          = 'Connect to Wi-Fi, read the current SSID, and list networks on Android and iOS.'
   s.description      = <<-DESC
 Connect Android and iOS devices to a Wi-Fi network, read the current SSID, and list available networks.
